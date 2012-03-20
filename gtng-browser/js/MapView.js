@@ -1,6 +1,5 @@
 var MapView = Backbone.View.extend({
-	className : "openLayersMapWrapper",
-
+	
 	initialize : function() {		
 		this.bindHandlersToEvents();
 		this.setupResizableContainer();
@@ -14,7 +13,6 @@ var MapView = Backbone.View.extend({
 	setupResizableContainer: function() {		
 		$(this.el).css('height', this.getInitialHeight());
 		$(this.el).css('width', this.getInitialWidth());
-				
 		
 		$(this.el).resizable({
 			// animate: don't use until the UI code calls the stop event
@@ -38,22 +36,29 @@ var MapView = Backbone.View.extend({
 	},
 	
 	onStartup: function() {
+		$(this.el).append("<div class='olMapWrapper'></div>");		
+		
 		var options = this.options.mapOptions;
-		this.map.render(this.el);		
+		this.map.render(this.$(".olMapWrapper")[0]);		
 		this.map.setCenter(new OpenLayers.LonLat(options.lon, options.lat), options.zoom);
 	},
 	
 	createOLMap: function() {
 		this.map = new OpenLayers.Map();		
-		var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                  "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
-        this.map.addLayer(layer);
 	},
 	
 	onResize: function(domElement) {
 		this.map.size = new OpenLayers.Size($(domElement).width(), $(domElement).height());
 		this.map.updateSize();
 	},
+	
+	addLayer: function(layer) {
+		this.map.addLayer(layer);
+	},
+	
+	addLayers: function(layers) {
+		this.map.addLayers(layers);
+	}
 	
 	
 });

@@ -6,6 +6,9 @@ describe("OpenLayersMapView", function() {
 		_.extend(this.hub, Backbone.Events);
 		
 		this.view = new MapView({eventHub: this.hub, mapOptions: this.mapOptions});
+		var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
+     	this.view.addLayer(layer);
 		
 	});
 
@@ -21,12 +24,14 @@ describe("OpenLayersMapView", function() {
 			// Re-run handler binding so that spy is bound to spy version of the onStartup
 			this.view.bindHandlersToEvents();		
 			
-			expect($(this.view.el)).not.toContain("olMapViewport");
+			expect($(this.view.el)).not.toContain("div.olMap");
+			expect($(this.view.el)).not.toContain("div.olMapViewport");
 			
 			this.hub.trigger("startup");
 			
-			expect(startupSpy).toHaveBeenCalledOnce();			
-			expect($(this.view.el).html()).toContain("olMapViewport");
+			expect(startupSpy).toHaveBeenCalledOnce();	
+			expect($(this.view.el)).toContain("div.olMap");
+			expect($(this.view.el)).toContain("div.olMapViewport");
 			
 			startupSpy.restore();
 		});
@@ -45,17 +50,26 @@ describe("OpenLayersMapView", function() {
 		});
 
 	});
-
-	describe("Enable styling of the map", function() {
-		it("should have a class defined", function() {			
-			expect($(this.view.el)).toHaveClass('openLayersMapWrapper');
-		});
-	});
 	
-	describe("A base layer in the map", function() {
+	describe("Map Layer", function() {
 		
-		it("can set as default", function() {			
+		it("can be added to the map prior to startup", function() {
+			
+			var openaerial = new OpenLayers.Layer.WMS(
+                "Open Aerial Map",
+                "http://glims.org/cgi-bin/tilecache-2.01/tilecache.cgi?",
+                {
+                  layers: "open_aerial_map"
+                }); 
+			this.view.addLayer(openaerial);
+			
 			this.hub.trigger("startup");
+			expect(this.view.map.getLayersBy("name","Open Aerial Map")[0]).toEqual(openaerial);
+		});
+		
+		it("can set as the default base layer", function() {			
+			
+			this.hub.trigger("startup");			
 			expect(this.view.map.baseLayer).not.toBeNull();
 		});
 		
