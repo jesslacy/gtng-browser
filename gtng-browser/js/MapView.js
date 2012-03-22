@@ -41,6 +41,9 @@ var MapView = Backbone.View.extend({
 		var options = this.options.mapOptions;
 		this.map.render(this.$(".olMapWrapper")[0]);		
 		this.map.setCenter(new OpenLayers.LonLat(options.lon, options.lat), options.zoom);
+		
+	    this.map.events.register("moveend", this, this.refreshExtent);
+	   
 	},
 	
 	createOLMap: function() {
@@ -51,6 +54,15 @@ var MapView = Backbone.View.extend({
 		this.map.size = new OpenLayers.Size($(domElement).width(), $(domElement).height());
 		this.map.updateSize();
 	},
+	
+	refreshExtent:  function(event) {
+    	var bounds = event.object.getExtent();
+		this.model.set({"left": bounds.left});
+		this.model.set({"right": bounds.right});
+		this.model.set({"bottom": bounds.bottom});
+		this.model.set({"top": bounds.top});
+    },
+	
 	
 	addLayer: function(layer) {
 		this.map.addLayer(layer);

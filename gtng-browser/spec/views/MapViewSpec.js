@@ -1,11 +1,14 @@
 describe("OpenLayersMapView", function() {
 	beforeEach(function() {
-		this.mapOptions = {lat: 40, lon: -123, zoom: 3};
 		
 		this.hub = {};
 		_.extend(this.hub, Backbone.Events);
 		
-		this.view = new MapView({eventHub: this.hub, mapOptions: this.mapOptions});
+		this.model = new Backbone.Model();		
+		this.mapOptions = {lat: 40, lon: -123, zoom: 3};
+		
+		this.view = new MapView({eventHub: this.hub, mapOptions: this.mapOptions, model: this.model});
+		
 		var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                 "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
      	this.view.addLayer(layer);
@@ -13,10 +16,6 @@ describe("OpenLayersMapView", function() {
 	});
 
 	describe("Instantiating the map", function() {
-
-		it("Contains an open layers map", function() {
-			expect(this.view.el.nodeName).toEqual("DIV");
-		});
 
 		it("creates map when startup event triggered", function() {
 			var startupSpy = sinon.spy(this.view, "onStartup");
@@ -99,5 +98,22 @@ describe("OpenLayersMapView", function() {
 			
 		});
 	});
+	
+	describe("Selecting a region of interest", function() {
+		 
+		it("Map extent is captured for use in search", function() {			
+			
+			this.hub.trigger("startup");
+			
+			var bounds = new OpenLayers.Bounds(-107.203125, 46.796875, -105.796875, 48.203125);
+			this.view.map.zoomToExtent(bounds);
+			
+			expect(this.model.get("left")).toEqual(bounds.left);
+			expect(this.model.get("right")).toEqual(bounds.right);
+			expect(this.model.get("bottom")).toEqual(bounds.bottom);
+			expect(this.model.get("top")).toEqual(bounds.top);
+		});
+	});
+	
 	
 });
