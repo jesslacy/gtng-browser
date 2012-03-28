@@ -39,10 +39,38 @@ var MapView = Backbone.View.extend({
 		$(this.el).append("<div class='olMapWrapper'></div>");		
 		
 		var options = this.options.mapOptions;
+
+		var queryLayer = this.map.getLayersBy('name', 'Query')[0];
+		var featureControl =  new OpenLayers.Control.WMSGetFeatureInfo({
+				url : 'http://localhost/glims/cgi-bin/glims_ogc',
+				title : 'Identify features by clicking',
+				layers : [ queryLayer ],
+				infoFormat: "application/vnd.ogc.gml",
+				queryVisible: false
+			});
+		featureControl.events.register("getfeatureinfo", this, this.getFeatureInfo);
+		this.map.addControl(featureControl);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		this.map.render(this.$(".olMapWrapper")[0]);		
 		this.map.setCenter(new OpenLayers.LonLat(options.lon, options.lat), options.zoom);
 		
 	    this.map.events.register("moveend", this, this.refreshExtent);
+	    featureControl.activate();
 	   
 	},
 	
@@ -62,7 +90,13 @@ var MapView = Backbone.View.extend({
 		this.model.set({"bottom": bounds.bottom});
 		this.model.set({"top": bounds.top});
     },
-	
+    
+    getFeatureInfo: function(event) {
+    	console.log(event);
+    	if ( event.features.length > 0 ) {
+    		console.log(JSON.stringify(event.features));
+    	}
+    },
 	
 	addLayer: function(layer) {
 		this.map.addLayer(layer);

@@ -5,14 +5,24 @@ describe("OpenLayersMapView", function() {
 		_.extend(this.hub, Backbone.Events);
 		
 		this.model = new Backbone.Model();		
-		this.mapOptions = {lat: 40, lon: -123, zoom: 3};
+		this.mapOptions = {lat: 40, lon: -105.5, zoom: 3};
 		
 		this.view = new MapView({eventHub: this.hub, mapOptions: this.mapOptions, model: this.model});
 		
 		var layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
                 "http://vmap0.tiles.osgeo.org/wms/vmap0", {layers: 'basic'} );
-     	this.view.addLayer(layer);
 		
+		var query = new OpenLayers.Layer.WMS(
+                "Query",
+                "http://localhost/glims/cgi-bin/glims_ogc?",
+                {
+                  layers:'glims_glacier_query,FOG_query,WGI_query',
+                  format:'image/png',
+                  'transparent':true,
+                  isBaseLayer: false
+                }
+            );
+     	this.view.addLayers([layer, query]);
 	});
 
 	describe("Instantiating the map", function() {
@@ -115,5 +125,45 @@ describe("OpenLayersMapView", function() {
 		});
 	});
 	
+	describe("Feature information", function() {
+		beforeEach(function() {
+			this.infoSpy = sinon.spy(this.view, "getFeatureInfo");
+			$(this.view.el).css('height', '256px');
+			$(this.view.el).css('width', '256px');
+			this.hub.trigger("startup");
+						
+			var featureLocation = new OpenLayers.LonLat(-105.68, 40.27);
+			var clickEvent = {
+				type: 'click',
+				xy : this.view.map.getPixelFromLonLat(featureLocation)
+			};
+			
+			this.view.map.events.triggerEvent('click', clickEvent);
+		});
+		
+		afterEach(function() {
+			this.infoSpy.restore();		
+		});
+		
+		it("Is retrieved when the user clicks on the map", function() {
+			waitsFor(function() {
+				return this.infoSpy.called;
+			}, "Click handler was never called.", 2000);
+
+			runs(function() {
+				expect(this.infoSpy).toHaveBeenCalledOnce();
+			});
+		});
+		
+		it("Updates the model with feature information", function() {
+			waitsFor(function() {
+				return this.infoSpy.called;
+			}, "Click handler was never called.", 2000);
+
+			runs(function() {
+				expect(this.view.model.feature).toHaveBeenCalledOnce();
+			});
+		});
+	});
 	
 });

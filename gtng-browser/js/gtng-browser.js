@@ -22,11 +22,13 @@ $(document).ready(function() {
 			});
 			this.mapView.render();
 			
+			/*
 			this.searchView = new SearchView({
 				el: "#container",
 				eventHub: this.eventHub
 			});
 			this.searchView.render();
+			*/
 		},
 		
 		addMapBaseLayers: function() {
@@ -96,12 +98,25 @@ $(document).ready(function() {
                    format:'image/png'
                  });
 
+             var query = new OpenLayers.Layer.WMS(
+                     "Query",
+                     "http://localhost/glims/cgi-bin/glims_ogc",
+                     {
+                       layers:"glims_glacier_query,FOG_query,WGI_query",
+                       format:'image/png',
+                       transparent: true,
+                       isBaseLayer: false
+                     }, {
+                    	 visible: false
+                     }
+                 );
 		            
 			this.mapView.addLayers([                    
                  countries,
                  wgi_glims,
                  fog_points,
-                 glims_glaciers
+                 glims_glaciers,
+                 query
              ]);
 		},
 		
