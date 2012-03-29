@@ -1,15 +1,12 @@
 var ResultsView = Backbone.View.extend({
-	
-	initialize : function() {		
-		this.bindHandlersToEvents();
-	},
-	
-	bindHandlersToEvents: function() {
-		this.options.eventHub.bind("doSearch", this.doSearch, this);
-	},
-	
-	doSearch: function() {
-		
+
+    initialize: function() {
+        this.model.bind('change', this.render, this);
+      },
+      
+	render : function() {
+		$(this.el).html(JSON.stringify(this.model.get("features")));
+		return this;
 	}
-	
+
 });

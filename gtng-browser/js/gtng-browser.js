@@ -13,34 +13,24 @@ $(document).ready(function() {
 			createViews: function () {
 			this.eventHub = {};
 			_.extend(this.eventHub, Backbone.Events);
-			
+			this.features = new Backbone.Model();
 			this.mapView = new MapView({
 				el: "#container",
-				model: new Backbone.Model(),
+				model: this.features,
 				eventHub: this.eventHub,
 				mapOptions: {lat: 47, lon: 8, zoom: 3}
 			});
 			this.mapView.render();
 			
-			/*
-			this.searchView = new SearchView({
-				el: "#container",
+			this.resultsView = new ResultsView({
+				el: "#results",
+				model: this.features,
 				eventHub: this.eventHub
 			});
-			this.searchView.render();
-			*/
+			
 		},
 		
 		addMapBaseLayers: function() {
-			/*var openaerial = new OpenLayers.Layer.WMS(
-                    "Open Aerial Map",
-                    "http://glims.org/cgi-bin/tilecache-2.01/tilecache.cgi?",
-                    {
-                      layers: "open_aerial_map"
-                    }); 
-			this.mapView.addLayer(openaerial);
-			*/
-			/* Currently supporting a single base layer */
 			var bluemarble = new OpenLayers.Layer.WMS(
                     "MODIS Blue Marble",
                     "http://glims.org/cgi-bin/tilecache-2.01/tilecache.cgi?",
@@ -48,14 +38,7 @@ $(document).ready(function() {
                       layers: "MODIS_Blue_Marble"
                     }); 
 			this.mapView.addLayer(bluemarble);
-			/*
-			var vmap0 = new OpenLayers.Layer.WMS(
-                    "Metacarta's VMAP0 basemap",
-                    "http://glims.org/cgi-bin/tilecache-2.01/tilecache.cgi?",
-                    {
-                      layers: "vmap0"
-                    }); 
-            */
+			
 		},
 		
 		addMapOverlayLayers: function() {

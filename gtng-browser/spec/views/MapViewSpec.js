@@ -4,7 +4,7 @@ describe("OpenLayersMapView", function() {
 		this.hub = {};
 		_.extend(this.hub, Backbone.Events);
 		
-		this.model = new Backbone.Model();		
+		this.model = new Backbone.Model();	
 		this.mapOptions = {lat: 40, lon: -105.5, zoom: 3};
 		
 		this.view = new MapView({eventHub: this.hub, mapOptions: this.mapOptions, model: this.model});
@@ -127,7 +127,7 @@ describe("OpenLayersMapView", function() {
 	
 	describe("Feature information", function() {
 		beforeEach(function() {
-			this.infoSpy = sinon.spy(this.view, "getFeatureInfo");
+			this.infoSpy = sinon.spy(this.view, "onGetFeatureInfo");
 			$(this.view.el).css('height', '256px');
 			$(this.view.el).css('width', '256px');
 			this.hub.trigger("startup");
@@ -156,14 +156,8 @@ describe("OpenLayersMapView", function() {
 		});
 		
 		it("Updates the model with feature information", function() {
-			waitsFor(function() {
-				return this.infoSpy.called;
-			}, "Click handler was never called.", 2000);
-
-			runs(function() {
-				expect(this.view.model.feature).toHaveBeenCalledOnce();
-			});
+			this.view.onGetFeatureInfo({features: twoGlacierFeaturesInChina});
+			expect(this.model.get("features")).toEqual(twoGlacierFeaturesInChina);
 		});
 	});
-	
 });

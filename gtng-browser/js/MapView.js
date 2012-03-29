@@ -37,7 +37,6 @@ var MapView = Backbone.View.extend({
 	
 	onStartup: function() {
 		$(this.el).append("<div class='olMapWrapper'></div>");		
-		
 		var options = this.options.mapOptions;
 
 		var queryLayer = this.map.getLayersBy('name', 'Query')[0];
@@ -46,32 +45,16 @@ var MapView = Backbone.View.extend({
 				title : 'Identify features by clicking',
 				layers : [ queryLayer ],
 				infoFormat: "application/vnd.ogc.gml",
-				queryVisible: false
+				queryVisible: true
 			});
-		featureControl.events.register("getfeatureinfo", this, this.getFeatureInfo);
-		this.map.addControl(featureControl);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		featureControl.events.register("getfeatureinfo", this, this.onGetFeatureInfo);
+		this.map.addControl(featureControl);	
+			
 		this.map.render(this.$(".olMapWrapper")[0]);		
 		this.map.setCenter(new OpenLayers.LonLat(options.lon, options.lat), options.zoom);
 		
 	    this.map.events.register("moveend", this, this.refreshExtent);
 	    featureControl.activate();
-	   
 	},
 	
 	createOLMap: function() {
@@ -91,11 +74,8 @@ var MapView = Backbone.View.extend({
 		this.model.set({"top": bounds.top});
     },
     
-    getFeatureInfo: function(event) {
-    	console.log(event);
-    	if ( event.features.length > 0 ) {
-    		console.log(JSON.stringify(event.features));
-    	}
+    onGetFeatureInfo: function(event) {
+    	this.model.set({"features": event.features});
     },
 	
 	addLayer: function(layer) {

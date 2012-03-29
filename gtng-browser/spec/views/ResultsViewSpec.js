@@ -6,22 +6,12 @@ describe("ResultsView", function() {
 		this.view = new ResultsView({eventHub: this.hub, model: this.model});
 	});
 	
-	it("Begins search when search button is clicked", function() {
-		var searchSpy = sinon.spy(this.view, "doSearch");
+	it("Displays list of map features", function() {
+		this.model.set({features: twoGlacierFeaturesInChina});
 		
-		// Re-run handler binding so that spy is bound to spy version of the onStartup
-		this.view.bindHandlersToEvents();		
-		
-		this.hub.trigger("doSearch");
-		
-		expect(searchSpy).toHaveBeenCalledOnce();	
-		searchSpy.restore();
+		expect($(this.view.el).html()).toContain("G080767E44708N");
 	});
 	
-	describe("Searching", function() {
-		it("Gets results from attached layers", function() {
-			
-		});
-	});
+	
 	
 });

@@ -1,4 +1,4 @@
-[ {
+var twoGlacierFeaturesInChina = [ {
 	"layer" : null,
 	"lonlat" : null,
 	"data" : {
@@ -94,4 +94,4 @@
 		"top" : 44.723038
 	},
 	"type" : "glimsquery"
-} ]
+} ];
