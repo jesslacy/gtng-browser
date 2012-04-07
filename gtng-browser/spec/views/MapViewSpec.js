@@ -156,8 +156,8 @@ describe("OpenLayersMapView", function() {
 		});
 		
 		it("Updates the model with feature information", function() {
-			this.view.onGetFeatureInfo({features: twoGlacierFeaturesInChina});
-			expect(this.model.get("features")).toEqual(twoGlacierFeaturesInChina);
+			this.view.onGetFeatureInfo({features: icelandGlacier});
+			expect(this.model.get("results")).toEqual({features: icelandGlacier});
 		});
 	});
 });

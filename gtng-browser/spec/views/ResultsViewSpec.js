@@ -7,9 +7,8 @@ describe("ResultsView", function() {
 	});
 	
 	it("Displays list of map features", function() {
-		this.model.set({features: twoGlacierFeaturesInChina});
-		
-		expect($(this.view.el).html()).toContain("G080767E44708N");
+		this.model.set({results: {features: icelandGlacier}});
+		expect($(this.view.el).html()).toContain("G341164E64838N");
 	});
 	
 	

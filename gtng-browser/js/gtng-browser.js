@@ -65,7 +65,7 @@ $(document).ready(function() {
 
              var wgi_glims = new OpenLayers.Layer.WMS(
                  "World Glacier Inventory",
-                 "http://glims.colorado.edu/cgi-bin/glims_ogc?",
+                 "http://localhost/glims/cgi-bin/glims_ogc?",
                  {
                    layers:"WGI_points",
                    transparent:true,
@@ -74,7 +74,7 @@ $(document).ready(function() {
              
              var fog_points = new OpenLayers.Layer.WMS(
                  "Fluctuations of Glaciers Metadata",
-                 "http://glims.colorado.edu/cgi-bin/glims_ogc?",
+                 "http://localhost/glims/cgi-bin/glims_ogc?",
                  {
                    layers:"FOG_points",
                    transparent:true,
@@ -85,20 +85,22 @@ $(document).ready(function() {
                      "Query",
                      "http://localhost/glims/cgi-bin/glims_ogc",
                      {
-                       layers:"glims_glacier_query,FOG_query,WGI_query",
+                       layers:"glims_glacier_query,WGI_points,FOG_query",
                        format:'image/png',
                        transparent: true,
                        isBaseLayer: false
-                     }, {
+                     }, 
+                     {
                     	 visible: false
                      }
                  );
+
 		            
 			this.mapView.addLayers([                    
                  countries,
-                 wgi_glims,
-                 fog_points,
                  glims_glaciers,
+                 fog_points,
+                 wgi_glims,
                  query
              ]);
 		},

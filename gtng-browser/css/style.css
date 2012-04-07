@@ -11,3 +11,70 @@
 .ui-resizable-helper { 
 	border: 1px dotted gray; 
 }
+
+.featureResults {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+.featureList {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	width: 60%;
+}
+
+li.featureResult {
+	margin: 3px;
+	padding: 0.4em;
+	border-bottom: 1px solid #F2F2F2;
+}
+
+div.featureHandle {	
+	float: left;
+	width: 2em;
+	cursor: pointer;
+}
+
+div.featureLegend {
+	height: 1em;
+	width: 1.2em;
+	border: 1px solid #F2F2F2;
+}
+
+div.featureHandle a {	
+	font-size: 60%;
+}
+
+.type_WGI_points .featureLegend {
+	background-color: #00C8C8;
+}
+
+.type_glimsquery .featureLegend {
+	background-color: #FF3491;
+}
+
+.type_FOG_points .featureLegend {
+	background-color: #C86432;
+}
+
+div.featureContainer {
+	margin-left: 2em;
+}
+
+h3.glacierID {
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+}
+
+p.glacierSummary {
+	margin: 0;
+	padding: 0;
+	font-size: .9em;
+}
+
+p.glacierLinks {
+	margin: 0;
+	padding: 0;
+	font-size: .9em;
+}

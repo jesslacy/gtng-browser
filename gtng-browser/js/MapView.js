@@ -45,7 +45,7 @@ var MapView = Backbone.View.extend({
 				title : 'Identify features by clicking',
 				layers : [ queryLayer ],
 				infoFormat: "application/vnd.ogc.gml",
-				queryVisible: true
+				queryVisible: false
 			});
 		featureControl.events.register("getfeatureinfo", this, this.onGetFeatureInfo);
 		this.map.addControl(featureControl);	
@@ -75,7 +75,7 @@ var MapView = Backbone.View.extend({
     },
     
     onGetFeatureInfo: function(event) {
-    	this.model.set({"features": event.features});
+    	this.model.set({results: {features: event.features}});
     },
 	
 	addLayer: function(layer) {
