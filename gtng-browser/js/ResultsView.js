@@ -42,7 +42,7 @@ var ResultsView = Backbone.View.extend({
 			case "WGI_points":
 				return that.wgiTemplate(feature);
 				break;
-			case "FOG_points":
+			case "FOG_query":
 				return that.fogTemplate(feature);
 				break;
 			}

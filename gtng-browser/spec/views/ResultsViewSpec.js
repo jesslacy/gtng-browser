@@ -10,7 +10,4 @@ describe("ResultsView", function() {
 		this.model.set({results: {features: icelandGlacier}});
 		expect($(this.view.el).html()).toContain("G341164E64838N");
 	});
-	
-	
-	
 });

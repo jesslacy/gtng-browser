@@ -85,7 +85,7 @@ $(document).ready(function() {
                      "Query",
                      "http://localhost/glims/cgi-bin/glims_ogc",
                      {
-                       layers:"glims_glacier_query,WGI_points,FOG_query",
+                       layers:"glims_glacier_query,FOG_query,WGI_points",
                        format:'image/png',
                        transparent: true,
                        isBaseLayer: false
