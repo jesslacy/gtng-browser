@@ -1,65 +1,72 @@
 var ResultsView = Backbone.View.extend({
 
+	events: {
+	      "click .resetSearch" : "resetSearch"
+	},
+	
 	initialize : function() {
-		this.createRenderTemplate();		
+		var config = this.model.get("application");
+		this.templates = config.templates;
+
+		this.resultTemplate = Handlebars.compile(config.templates.featureResults);
+		this.emptyResultsTemplate = Handlebars.compile(config.templates.emptyFeatureResults);
+		this.listTemplate = Handlebars.compile(config.templates.featureResultList);
+		this.itemTemplate = Handlebars.compile(config.templates.featureResultItem);
+		this.templates["header_glimsquery"] =  Handlebars.compile(config.templates.header_glimsquery);
+		this.templates["header_WGI_points"] =  Handlebars.compile(config.templates.header_WGI_points);
 		this.model.bind('change', this.render, this);
 	},
-      
+
 	render : function() {
+		$(this.el).removeClass("resultsFound");
 		var results = this.model.get("results");
-		if (results) {
-			var resultsHtml = this.resultTemplate(results);
-			$(this.el).html(resultsHtml);
+		if (!results || !results.features ) {
+			$(this.el).html("");
+		} else if (results.features.length > 0) {
+			$(this.el).addClass("resultsFound");
+			var resultEl = $(this.resultTemplate(results));
+			$(this.el).html(resultEl);
+			this.$(".resetSearch").button();
+			
+			var featureListEl = $(this.listTemplate(results));
+			resultEl.append(featureListEl);
+			
+			var featuresByType = _.groupBy(results.features, function(f){ return f.type; });
+			var that = this;
+			_.each(featuresByType, function(features, type) {
+				var categorizedItemsEl = $(that.templates["header_"+type]());
+				$(".featureResults", featureListEl).append(categorizedItemsEl);
+				_.reduce(features, that.appendFeature, $(".featureList", categorizedItemsEl), that);
+			});
+			
+		} else {
+			$(this.el).html(this.emptyResultsTemplate(results));
 		}
+
 		return this;
 	},
-	
-	events: {
-	      "click .featureHandle"   : "showFeature",
+
+	appendFeature : function(listEl, feature) {
+		var listItemEl = $(this.itemTemplate());
+		listItemEl.addClass("type_"+feature.type);
+		
+		var featureView = new FeatureResultView({
+			el : listItemEl.get(0),
+			eventHub : this.options.eventHub,
+			template : this.templates["row_"+feature.type],
+			model : new Backbone.Model({
+				feature : feature
+			})
+		});
+
+		featureView.render();
+		listEl.append(listItemEl);
+
+		return listEl;
 	},
 	
-	createRenderTemplate: function() {
-		var glimsSource = ""
-			+ "<h3 class='glacierID'>{{data.glac_id}} - {{data.glac_name}}</h3>"
-			+ "<p class='glacierSummary'>Acquired {{data.image_date}} by {{data.anlst_givn}} {{data.anlst_surn}}, {{data.anlst_affl}}</p>"
-			+ "<p class='glacierLinks'><a target='glims' href='http://glims.colorado.edu/php_utils/glacier_info.php?anlys_id={{data.anlys_id}}'>GLIMS Database</a></p>";
-		this.glimsTemplate = Handlebars.compile(glimsSource);
-		
-		var wgiSource = ""
-			+ "<h3 class='glacierID'>{{data.wgi_glacier_id}} - {{data.glacier_name}}</h3>"
-			+ "<p class='glacierSummary'>Located at ({{data.lat}},{{data.lon}}). Elevation range is {{data.min_elev}}m to {{data.max_elev}}m.  Total area is {{data.total_area}}sq/km.</p>";
-		this.wgiTemplate = Handlebars.compile(wgiSource);
-		
-		var fogSource = "";
-		this.fogTemplate = Handlebars.compile(fogSource);
-		
-		var that = this;
-		Handlebars.registerHelper('feature', function(feature) {
-			switch (feature.type) {
-			case "glimsquery":
-				return that.glimsTemplate(feature);
-				break;
-			case "WGI_points":
-				return that.wgiTemplate(feature);
-				break;
-			case "FOG_query":
-				return that.fogTemplate(feature);
-				break;
-			}
-		} );
-		
-		var resultSource = "<div class='featureResults'>"
-				+ "<p>{{features.length}} features: </p>"
-				+ "<ul class='featureList'>{{#features}}"
-				+   "<li class='featureResult type_{{type}}'><div class='featureHandle'><div class='featureLegend'></div><a href='#'>Show</a></div><div class='featureContainer'>{{{feature this}}}</div></li>"
-				+ "{{/features}}</ul></div>";
-		this.resultTemplate = Handlebars.compile(resultSource);
-	},
-	
-	showFeature: function(event)
-	{
-		event.stopPropagation();
-		console.log("fired", $(event.target).find("a").attr("href"));
-		this.options.eventHub.trigger("showFeature");
+	resetSearch: function() {
+		this.model.set({results: {}});
+		this.options.eventHub.trigger("resetMap");
 	}
 });

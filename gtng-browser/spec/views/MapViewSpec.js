@@ -1,11 +1,9 @@
 describe("OpenLayersMapView", function() {
 	beforeEach(function() {
 		
-		this.hub = {};
-		_.extend(this.hub, Backbone.Events);
-		
-		this.model = new Backbone.Model();	
-		this.mapOptions = {lat: 40, lon: -105.5, zoom: 3};
+		this.hub = sharedConfig.hub;
+		this.model = sharedConfig.model;
+		this.mapOptions = {lat: 40, lon: -105.5, zoom: 0};
 		
 		this.view = new MapView({eventHub: this.hub, mapOptions: this.mapOptions, model: this.model});
 		
@@ -16,7 +14,7 @@ describe("OpenLayersMapView", function() {
                 "Query",
                 "http://localhost/glims/cgi-bin/glims_ogc?",
                 {
-                  layers:'glims_glacier_query,FOG_query,WGI_query',
+                  layers:'glims_glacier_query,FOG_query,WGI_points',
                   format:'image/png',
                   'transparent':true,
                   isBaseLayer: false
@@ -115,7 +113,7 @@ describe("OpenLayersMapView", function() {
 			
 			this.hub.trigger("startup");
 			
-			var bounds = new OpenLayers.Bounds(-107.203125, 46.796875, -105.796875, 48.203125);
+			var bounds = new OpenLayers.Bounds(-106.412109375, 47.32421875, -106.060546875, 47.67578125);
 			this.view.map.zoomToExtent(bounds);
 			
 			expect(this.model.get("left")).toEqual(bounds.left);
@@ -156,8 +154,21 @@ describe("OpenLayersMapView", function() {
 		});
 		
 		it("Updates the model with feature information", function() {
-			this.view.onGetFeatureInfo({features: icelandGlacier});
-			expect(this.model.get("results")).toEqual({features: icelandGlacier});
+			this.view.onGetFeatureInfo({features: icelandGlacier, xy: {x: 1, y: 2}});
+			expect(this.model.get("results")).toEqual({features: icelandGlacier, lat: 39.47265625, lon: -105.32421875});
+		});
+	});
+	
+	describe("Showing location of features on the map.", function() {
+		beforeEach(function() {
+			$(this.view.el).css('height', '256px');
+			$(this.view.el).css('width', '256px');
+			this.hub.trigger("startup");
+		});
+		
+		it("Shows a popup when the showFeature event fires", function() {
+			this.hub.trigger("showFeature", icelandGlacier[0]	);
+			expect(this.view.map.popups[0].contentHTML).toContain("G341164E64838N - Hofsjokull");
 		});
 	});
 });

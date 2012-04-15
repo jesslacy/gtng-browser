@@ -1,6 +1,12 @@
 .ui-resizable {
 	padding: 15px;
+	padding-left: 45px;
+	padding-bottom: 45px;
 	border: 1px solid #EEEEEE;
+}
+
+.ui-widget {
+	font-size: 80%;
 }
 
 .olMapWrapper {
@@ -8,25 +14,77 @@
 	width: 100%;
 }
 
+.panZoom {
+	
+}
+
+.scaleLine {
+	font-size: 70%;
+	position: absolute;
+	left: 60px;
+	bottom: 0;
+}
+
+.mousePosition {
+	font-size: 70%;
+	position: absolute;
+	right: 20px;
+	bottom: 0;
+}
+
+.helpText {
+	font-size: 90%;
+	position: absolute;
+	right: 20px;
+	bottom: 1em;
+}
+
 .ui-resizable-helper { 
 	border: 1px dotted gray; 
 }
 
-.featureResults {
-	font-family: "Trebuchet MS", Helvetica, sans-serif;
+.resultsFound {
+	top: 0;
+	position: absolute;
+	height: 100%;
+	width: 60%;
 }
+div.featureResults {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	font-size: .9em;
+	height: 70%;
+}
+
+.featureResults p {
+	margin: 7px;
+}
+
+.olMapFeaturePopup {
+	font-size: 90%;
+}
+
+div.featureResultContainer {
+	height: 100%;
+	overflow: auto;
+	font-size: 80%;
+	border-top: 1px solid #8888FF;
+	margin-top: 10px;
+}
+
 
 .featureList {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-	width: 60%;
 }
 
-li.featureResult {
+.featureItem {
 	margin: 3px;
 	padding: 0.4em;
 	border-bottom: 1px solid #F2F2F2;
+}
+.featureItem:hover {
+	background-color: #F4F4F3;
 }
 
 div.featureHandle {	
@@ -44,6 +102,7 @@ div.featureLegend {
 div.featureHandle a {	
 	font-size: 60%;
 }
+
 
 .type_WGI_points .featureLegend {
 	background-color: #00C8C8;

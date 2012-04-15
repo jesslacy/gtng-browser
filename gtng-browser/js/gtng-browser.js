@@ -14,18 +14,98 @@ $(document).ready(function() {
 			this.eventHub = {};
 			_.extend(this.eventHub, Backbone.Events);
 			this.features = new Backbone.Model();
+			var appConfig = {
+					templates: {
+						mapTemplate: "<div class='olMapWrapper'></div>",
+						mapControlsTemplate:
+							  "<div class='panZoom'></div>"
+							+ "<div class='scaleLine'></div><div class='helpText'>Click on the map to search:</div>"
+							+ "<div class='mousePosition'></div>",
+						popupTemplate_glimsquery : "<div class='olMapFeaturePopup'>{{glac_id}} - {{glac_name}}</div>",
+						popupTemplate_WGI_points : "<div class='olMapFeaturePopup'>{{wgi_glacier_id}} - {{glacier_name}}</div>",
+						emptyFeatureResults: "<div class='featureResults'>"
+							+ "<p>No results are available at location ({{lat}}, {{lon}}).</p></div>",
+						featureResults: "<div class='featureResults'>"
+							+ "<p>{{features.length}} features at location ({{lat}}, {{lon}}).</p><div class='resetSearch'>Start a new search.</div></div>",
+						featureResultList: "<div class='featureResultContainer'><table class='featureResults'></table></div>",
+						featureResultItem: "<tr class='featureItem'></tr>",
+						header_glimsquery: "<tr><td><table class='featureList'><tr>"
+							+ '<th></th>'
+							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Static">Glacier Name</a></th>'
+							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Static">Glacier ID</a></th>'
+							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Image">Acquisition Date</a></th>'
+							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Dynamic">Analysis ID</a></th>'
+							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Dynamic">Analyst Name</a></th>'
+							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Institution">RC Institution</a></th>'
+							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Package_Info">Date Available</a></th>'
+							+ '<th>More Info</th>'
+							+ "</tr></table></td></tr>",
+						row_glimsquery : "<td><div class='featureLegend'>&nbsp;</div></td><td>{{glac_id}}</td><td>{{glac_name}}</td><td>{{image_date}}</td><td>{{anlys_id}}</td><td>{{anlst_givn}} {{anlst_surn}}</td><td>{{anlst_affl}}</td><td>{{release_date}}</td>"
+							+ '<td><center><a target="_blank" href="http://glims.colorado.edu/php_utils/glacier_info.php?anlys_id={{anlys_id}}">More...</a></center></td>',
+						header_FOG_points: "<tr><td><table class='featureList'><thead><tr>"
+							+ '<th></th>'
+							+ '<th><a title="Political Unit" alt="Political Unit" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">Political Unit</a></th>'
+							+ '<th><a title="Local PSFG code" alt="Local PSFG code" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">Local PSFG code</a></th>'
+							+ '<th><a title="World Glacier Monitorinig Service ID" alt="World Glacier Monitorinig Service ID" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">WGMS ID</a></th>'
+							+ '<th><a title="Glacier Name" alt="Glacier Name" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">Glacier Name</a></th>'
+							+ '<th><a title="Approximate geographic location" alt="Approximate geographic location" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">General location</a></th>'
+							+ '<th><a title="More specific geographic location" alt="More specific geographic location" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">Specific location</a></th>'
+							+ '<th><a title="Latitude" alt="Latitude" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">Latitude</a></th>'
+							+ '<th><a title="Longitude" alt="Longitude" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">Longitude</a></th>'
+							+ '<th><a title="Front variation, first reference year" alt="Front variation, first reference year" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">FV_1stRY</a></th>'
+							+ '<th><a title="Front variation, first survey year" alt="Front variation, first survey year" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">FV_1stSY</a></th>'
+							+ '<th><a title="Front variation, last survey year" alt="Front variation, last survey year" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">FV_LastSY</a></th>'
+							+ '<th><a title="Front variation, number of observations" alt="Front variation, number of observations" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">FV_NoObs</a></th>'
+							+ '<th><a title="Mass balance, first survey year" alt="Mass balance, first survey year" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">MB_1stSY</a></th>'
+							+ '<th><a title="Mass balance, last survey year" alt="Mass balance, last survey year" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">MB_LastSY</a></th>'
+							+ '<th><a title="Mass balance, number of observations" alt="Mass balance, number of observations" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">MB_NoObs</a></th>'
+							+"</tr></thead></table></td></tr>",
+						row_WGI_points : "<td><div class='featureLegend'>&nbsp;</div></td><td>{{political_unit}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td>"
+							+ "<td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td>" 
+							+ "<td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td>",
+						header_WGI_points: "<tr><td><table class='featureList'><thead><tr>"
+							+ '<th></th>'
+							+ '<th>Glacier Name</th>'
+							+ '<th>WGI Glacier ID</th>'
+							+ '<th>Political Unit</th>'
+							+ '<th>Latitude</th>'
+							+ '<th>Longitude</th>'
+							+ '<th>Max. Elevation, m</th>'
+							+ '<th>Mean Elevation, m</th>'
+							+ '<th>Min. Elevation, m</th>'
+							+ '<th>Class</th>'
+							+ '<th>Form</th>'
+							+ '<th>Front</th>'
+							+ '<th>Longitudinal Profile</th>'
+							+ '<th>Tongue Activity</th>'
+							+ '<th>Source</th>'
+							+ '<th>Total Area, km<sup>2</sup></th>'
+							+"</tr></thead></table></td></tr>",
+						row_WGI_points : "<td><div class='featureLegend'>&nbsp;</div></td><td>{{glacier_name}}</td><td>{{wgi_glacier_id}}</td><td>{{political_unit}}</td>"
+							+ "<td>{{lat}}</td><td>{{lon}}</td><td>{{max_elev}}</td><td>{{mean_elev}}</td>" 
+							+ "<td>{{min_elev}}</td><td>{{primary_class}}</td><td>{{form}}</td>"
+							+ "<td>{{frontal_char}}</td><td>{{longi_profile}}</td><td>{{tongue_activity}}</td>"
+							+ "<td>{{source_nourish}}</td><td>{{total_area}}</td>"
+				
+					}
+			};
+			this.features.set({"application": appConfig});
+			
 			this.mapView = new MapView({
 				el: "#container",
 				model: this.features,
 				eventHub: this.eventHub,
-				mapOptions: {lat: 47, lon: 8, zoom: 3}
+				mapOptions: {lat: 47, lon: 8, zoom: 0}
 			});
 			this.mapView.render();
 			
 			this.resultsView = new ResultsView({
 				el: "#results",
 				model: this.features,
-				eventHub: this.eventHub
+				eventHub: this.eventHub,
+				template:  "<div class='featureResults'>"
+					+ "<p>{{features.length}} features: </p>"
+					+ "<ul class='featureList'></ul></div>"
 			});
 			
 		},
