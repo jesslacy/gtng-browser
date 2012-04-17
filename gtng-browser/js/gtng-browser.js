@@ -24,7 +24,7 @@ $(document).ready(function() {
 						popupTemplate_glimsquery : "<div class='olMapFeaturePopup'>{{glac_id}} - {{glac_name}}</div>",
 						popupTemplate_WGI_points : "<div class='olMapFeaturePopup'>{{wgi_glacier_id}} - {{glacier_name}}</div>",
 						emptyFeatureResults: "<div class='featureResults'>"
-							+ "<p>No results are available at location ({{lat}}, {{lon}}).</p></div>",
+							+ "<p>No results are available at location ({{lat}}, {{lon}}). Please try clicking again.</p></div>",
 						featureResults: "<div class='featureResults'>"
 							+ "<p>{{features.length}} features at location ({{lat}}, {{lon}}).</p><div class='resetSearch'>Start a new search.</div></div>",
 						featureResultList: "<div class='featureResultContainer'><table class='featureResults'></table></div>",
@@ -113,9 +113,9 @@ $(document).ready(function() {
 		addMapBaseLayers: function() {
 			var bluemarble = new OpenLayers.Layer.WMS(
                     "MODIS Blue Marble",
-                    "http://glims.org/cgi-bin/tilecache-2.01/tilecache.cgi?",
+                    "http://nsidc.org/api/ogc/nsidc_ogc_global",
                     {
-                      layers: "MODIS_Blue_Marble"
+                      layers: "blue_marble_07"
                     }); 
 			this.mapView.addLayer(bluemarble);
 			
@@ -135,7 +135,7 @@ $(document).ready(function() {
 			
 			 glims_glaciers = new OpenLayers.Layer.WMS(
                 "GLIMS Glaciers",
-                "http://glims.colorado.edu/cgi-bin/glims_ogc?",
+                "http://glims.colorado.edu:8080/cgi-bin/glims_ogc?",
                 {
                   layers:"glims_glaciers",
                   format:'image/png',
@@ -145,25 +145,31 @@ $(document).ready(function() {
 
              var wgi_glims = new OpenLayers.Layer.WMS(
                  "World Glacier Inventory",
-                 "http://localhost/glims/cgi-bin/glims_ogc?",
+                 "http://glims.colorado.edu:8080/cgi-bin/glims_ogc?",
                  {
                    layers:"WGI_points",
                    transparent:true,
                    format:'image/png'
+                 },
+                 {
+                	 opacity: 0.3
                  });
              
              var fog_points = new OpenLayers.Layer.WMS(
                  "Fluctuations of Glaciers Metadata",
-                 "http://localhost/glims/cgi-bin/glims_ogc?",
+                 "http://glims.colorado.edu:8080/cgi-bin/glims_ogc?",
                  {
                    layers:"FOG_points",
                    transparent:true,
                    format:'image/png'
+                 },
+                 {
+                	 opacity: 0.3
                  });
 
              var query = new OpenLayers.Layer.WMS(
                      "Query",
-                     "http://localhost/glims/cgi-bin/glims_ogc",
+                     "http://glims.colorado.edu:8080/cgi-bin/glims_ogc",
                      {
                        layers:"glims_glacier_query,FOG_query,WGI_points",
                        format:'image/png',
@@ -171,7 +177,8 @@ $(document).ready(function() {
                        isBaseLayer: false
                      }, 
                      {
-                    	 visible: false
+                    	 visible: false,
+                    	 displayInLayerSwitcher: false
                      }
                  );
 

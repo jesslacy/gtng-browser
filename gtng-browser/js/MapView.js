@@ -68,7 +68,7 @@ var MapView = Backbone.View.extend({
 
 		var queryLayer = this.map.getLayersBy('name', 'Query')[0];
 		var featureControl = new OpenLayers.Control.WMSGetFeatureInfo({
-			url : 'http://localhost/glims/cgi-bin/glims_ogc',
+			url : queryLayer.url,
 			title : 'Identify	 features by clicking',
 			layers : [ queryLayer ],
 			infoFormat : "application/vnd.ogc.gml",
