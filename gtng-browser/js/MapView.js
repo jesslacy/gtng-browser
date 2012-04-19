@@ -11,6 +11,7 @@ var MapView = Backbone.View.extend({
 		var config = this.model.get("application");
 		this.popupTemplate_glimsquery = Handlebars.compile(config.templates.popupTemplate_glimsquery);
 		this.popupTemplate_WGI_points = Handlebars.compile(config.templates.popupTemplate_WGI_points);
+		this.popupTemplate_FOG_points = Handlebars.compile(config.templates.popupTemplate_FOG_points);
 		this.mapTemplate = Handlebars.compile(config.templates.mapTemplate);
 		this.controlsTemplate = Handlebars.compile(config.templates.mapControlsTemplate);
 	},

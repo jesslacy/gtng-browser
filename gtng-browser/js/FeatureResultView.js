@@ -19,6 +19,7 @@ var FeatureResultView = Backbone.View.extend({
 	
 	showFeature: function(event)
 	{
+		console.log(this.model.get("feature"));
 		this.options.eventHub.trigger("showFeature", this.model.get("feature"));
 		event.stopPropagation();
 	},

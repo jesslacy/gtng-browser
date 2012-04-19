@@ -14,6 +14,7 @@ var ResultsView = Backbone.View.extend({
 		this.itemTemplate = Handlebars.compile(config.templates.featureResultItem);
 		this.templates["header_glimsquery"] =  Handlebars.compile(config.templates.header_glimsquery);
 		this.templates["header_WGI_points"] =  Handlebars.compile(config.templates.header_WGI_points);
+		this.templates["header_FOG_points"] =  Handlebars.compile(config.templates.header_FOG_points);
 		this.model.bind('change', this.render, this);
 	},
 

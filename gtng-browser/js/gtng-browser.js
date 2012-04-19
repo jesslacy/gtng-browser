@@ -23,6 +23,7 @@ $(document).ready(function() {
 							+ "<div class='mousePosition'></div>",
 						popupTemplate_glimsquery : "<div class='olMapFeaturePopup'>{{glac_id}} - {{glac_name}}</div>",
 						popupTemplate_WGI_points : "<div class='olMapFeaturePopup'>{{wgi_glacier_id}} - {{glacier_name}}</div>",
+						popupTemplate_FOG_points : "<div class='olMapFeaturePopup'>{{WGMS_ID}} - {{NAME}}</div>",
 						emptyFeatureResults: "<div class='featureResults'>"
 							+ "<p>No results are available at location ({{lat}}, {{lon}}). Please try clicking again.</p></div>",
 						featureResults: "<div class='featureResults'>"
@@ -60,6 +61,10 @@ $(document).ready(function() {
 							+ '<th><a title="Mass balance, last survey year" alt="Mass balance, last survey year" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">MB_LastSY</a></th>'
 							+ '<th><a title="Mass balance, number of observations" alt="Mass balance, number of observations" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">MB_NoObs</a></th>'
 							+"</tr></thead></table></td></tr>",
+						row_FOG_points: "<td><div class='featureLegend'>&nbsp;</div></td><td>{{PU}}</td><td>{{LOCAL_PSFG}}</td><td>{{WGMS_ID}}</td><td>{{NAME}}</td>"
+							+ "<td>{{GEN_LOC}}</td><td>{{SPEC_LOC}}</td><td>{{LATITUDE}}</td><td>{{LONGITUDE}}</td>"
+							+ "<td>{{FV_1STRY}}</td><td>{{FV_1STSY}}</td><td>{{FV_LASTSY}}</td><td>{{FV_NOOBS}}</td>"
+							+ "<td>{{MB_1STSY}}</td><td>{{MB_LASTSY}}</td><td>{{MB_NOOBS}}</td>",
 						row_WGI_points : "<td><div class='featureLegend'>&nbsp;</div></td><td>{{political_unit}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td>"
 							+ "<td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td>" 
 							+ "<td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td>",
@@ -150,9 +155,6 @@ $(document).ready(function() {
                    layers:"WGI_points",
                    transparent:true,
                    format:'image/png'
-                 },
-                 {
-                	 opacity: 0.3
                  });
              
              var fog_points = new OpenLayers.Layer.WMS(
@@ -162,16 +164,13 @@ $(document).ready(function() {
                    layers:"FOG_points",
                    transparent:true,
                    format:'image/png'
-                 },
-                 {
-                	 opacity: 0.3
                  });
 
              var query = new OpenLayers.Layer.WMS(
                      "Query",
                      "http://glims.colorado.edu:8080/cgi-bin/glims_ogc",
                      {
-                       layers:"glims_glacier_query,FOG_query,WGI_points",
+                       layers:"glims_glacier_query,FOG_points,WGI_points",
                        format:'image/png',
                        transparent: true,
                        isBaseLayer: false
