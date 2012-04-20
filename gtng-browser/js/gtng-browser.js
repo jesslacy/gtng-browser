@@ -27,10 +27,11 @@ $(document).ready(function() {
 						emptyFeatureResults: "<div class='featureResults'>"
 							+ "<p>No results are available at location ({{lat}}, {{lon}}). Please try clicking again.</p></div>",
 						featureResults: "<div class='featureResults'>"
-							+ "<p>{{features.length}} features at location ({{lat}}, {{lon}}).</p><div class='resetSearch'>Start a new search.</div></div>",
+							+ "<p>Number of features at location ({{lat}}, {{lon}}):  {{features.length}}</p><div class='resetSearch'>Start a new search.</div></div>",
 						featureResultList: "<div class='featureResultContainer'><table class='featureResults'></table></div>",
 						featureResultItem: "<tr class='featureItem'></tr>",
 						header_glimsquery: "<tr><td><table class='featureList'><tr>"
+                            + "<th colspan='9' class='res_sect_head'><a href='http://glims.colorado.edu:8080/glacierdata/' target='_blank'>GLIMS Glacier Database</a></th></tr><tr>"
 							+ '<th></th>'
 							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Static">Glacier Name</a></th>'
 							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Static">Glacier ID</a></th>'
@@ -44,6 +45,7 @@ $(document).ready(function() {
 						row_glimsquery : "<td><div class='featureLegend'>&nbsp;</div></td><td>{{glac_id}}</td><td>{{glac_name}}</td><td>{{image_date}}</td><td>{{anlys_id}}</td><td>{{anlst_givn}} {{anlst_surn}}</td><td>{{anlst_affl}}</td><td>{{release_date}}</td>"
 							+ '<td><center><a target="_blank" href="http://glims.colorado.edu/php_utils/glacier_info.php?anlys_id={{anlys_id}}">More...</a></center></td>',
 						header_FOG_points: "<tr><td><table class='featureList'><thead><tr>"
+                            + "<th colspan='16' class='res_sect_head'><a href='http://www.wgms.ch/dataexp.html' target='_blank'>Fluctuations of Glaciers database</a></th></tr><tr>"
 							+ '<th></th>'
 							+ '<th><a title="Political Unit" alt="Political Unit" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">Political Unit</a></th>'
 							+ '<th><a title="Local PSFG code" alt="Local PSFG code" target="_blank" href="http://glims.colorado.edu/glacierdata/info/wgms_layer.html">Local PSFG code</a></th>'
@@ -69,6 +71,7 @@ $(document).ready(function() {
 							+ "<td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td>" 
 							+ "<td>{{glacier_name}}</td><td>{{glacier_name}}</td><td>{{glacier_name}}</td>",
 						header_WGI_points: "<tr><td><table class='featureList'><thead><tr>"
+                            + "<th colspan='16' class='res_sect_head'><a href='http://nsidc.org/data/g01130.html' target='_blank'>World Glacier Inventory</a></th></tr><tr>"
 							+ '<th></th>'
 							+ '<th>Glacier Name</th>'
 							+ '<th>WGI Glacier ID</th>'
@@ -100,7 +103,7 @@ $(document).ready(function() {
 				el: "#container",
 				model: this.features,
 				eventHub: this.eventHub,
-				mapOptions: {lat: 47, lon: 8, zoom: 0}
+				mapOptions: {lat: 0, lon: 0, zoom: 0}
 			});
 			this.mapView.render();
 			
