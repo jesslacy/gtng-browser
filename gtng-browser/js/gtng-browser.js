@@ -19,7 +19,7 @@ $(document).ready(function() {
 						mapTemplate: "<div class='olMapWrapper'></div>",
 						mapControlsTemplate:
 							  "<div class='panZoom'></div>"
-							+ "<div class='scaleLine'></div><div class='helpText'>Click on the map to search:</div>"
+							+ "<div class='scaleLine'></div><div class='helpText'>Click on the map to see attributes.</div>"
 							+ "<div class='mousePosition'></div>",
 						popupTemplate_glimsquery : "<div class='olMapFeaturePopup'>{{glac_id}} - {{glac_name}}</div>",
 						popupTemplate_WGI_points : "<div class='olMapFeaturePopup'>{{wgi_glacier_id}} - {{glacier_name}}</div>",
@@ -27,14 +27,14 @@ $(document).ready(function() {
 						emptyFeatureResults: "<div class='featureResults'>"
 							+ "<p>No results are available at location ({{lat}}, {{lon}}). Please try clicking again.</p></div>",
 						featureResults: "<div class='featureResults'>"
-							+ "<p>Number of features at location ({{lat}}, {{lon}}):  {{features.length}}</p><div class='resetSearch'>Start a new search.</div></div>",
+							+ "<p>Number of features near location ({{lat}}, {{lon}}):  {{features.length}}</p><div class='resetSearch'>Start a new search.</div></div>",
 						featureResultList: "<div class='featureResultContainer'><table class='featureResults'></table></div>",
 						featureResultItem: "<tr class='featureItem'></tr>",
 						header_glimsquery: "<tr><td><table class='featureList'><tr>"
                             + "<th colspan='9' class='res_sect_head'><a href='http://glims.colorado.edu:8080/glacierdata/' target='_blank'>GLIMS Glacier Database</a></th></tr><tr>"
 							+ '<th></th>'
-							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Static">Glacier Name</a></th>'
 							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Static">Glacier ID</a></th>'
+							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Static">Glacier Name</a></th>'
 							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Image">Acquisition Date</a></th>'
 							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Dynamic">Analysis ID</a></th>'
 							+ '<th><a target="_blank" ,="" href="http://www.glims.org/MapsAndDocs/DB/GLIMS_DD_20050602.html#Glacier_Dynamic">Analyst Name</a></th>'
@@ -106,7 +106,7 @@ $(document).ready(function() {
 				mapOptions: {lat: 0, lon: 0, zoom: 0}
 			});
 			this.mapView.render();
-			
+
 			this.resultsView = new ResultsView({
 				el: "#results",
 				model: this.features,
@@ -115,9 +115,51 @@ $(document).ready(function() {
 					+ "<p>{{features.length}} features: </p>"
 					+ "<ul class='featureList'></ul></div>"
 			});
-			
+
+//////////////////////////////////////////////////////////////////
+            this.drawLegendEntry = function(layer) {
+                var url = "http://glims.colorado.edu:8080/cgi-bin/glims_ogc?service=WMS&version=1.1.1&request=GetLegendGraphic&"
+                          + "layer=" + layer
+                          + "&SRS=EPSG:4326&BBOX=-180,-90,180,90&x=-17&y=64.4&width=200&height=40&format=PNG";
+                jQuery("div#legend").css({'width': '20%'});
+                jQuery("<img>",
+                       {
+                           src: url,
+                           alt: layer,
+                           title: layer
+                       })
+                       .css({
+                           border: '0px',
+                           padding: '2px 2px 2px 2px',
+                           clear: 'both',
+
+                       })
+                       .appendTo('div#legend');
+            }
+            this.drawLegend = function() {
+                jQuery("<h3>Legend</h3>").appendTo("div#legend");
+                var layers = ["glimspoints","WGI_points","FOG_points" ];
+                for each (var layer in layers) {
+                    this.drawLegendEntry(layer);
+                }
+            };
+            this.drawLegend();
+//////////////////////////////////////////////////////////////////
+
+            jQuery("div#tabs").tabs({
+                cache: true,
+                ajaxOptions: {ifModified: true},
+                change: function(event, ui){
+                          jQuery(".ui-widget-content:not(.ui-tabs)").each(function(index){
+                              if (!jQuery(this).hasClass("ui-helper-clearfix")) {
+                                  jQuery(this).addClass("ui-helper-clearfix");
+                              }
+                          });
+                      },
+            });
+
 		},
-		
+
 		addMapBaseLayers: function() {
 			var bluemarble = new OpenLayers.Layer.WMS(
                     "MODIS Blue Marble",
@@ -128,7 +170,7 @@ $(document).ready(function() {
 			this.mapView.addLayer(bluemarble);
 			
 		},
-		
+
 		addMapOverlayLayers: function() {
 
 			var countries  = new OpenLayers.Layer.WMS (
@@ -147,11 +189,11 @@ $(document).ready(function() {
                 {
                   layers:"glims_glaciers",
                   format:'image/png',
-                  transparent:true,
+                  'transparent':true,
                   isBaseLayer: false
                 });
 
-             var wgi_glims = new OpenLayers.Layer.WMS(
+             var wgi_points = new OpenLayers.Layer.WMS(
                  "World Glacier Inventory",
                  "http://glims.colorado.edu:8080/cgi-bin/glims_ogc?",
                  {
@@ -171,26 +213,25 @@ $(document).ready(function() {
 
              var query = new OpenLayers.Layer.WMS(
                      "Query",
-                     "http://glims.colorado.edu:8080/cgi-bin/glims_ogc",
+                     "http://glims.colorado.edu:8080/cgi-bin/glims_ogc?",
                      {
                        layers:"glims_glacier_query,FOG_points,WGI_points",
                        format:'image/png',
-                       transparent: true,
+                       'transparent': true,
                        isBaseLayer: false
                      }, 
                      {
-                    	 visible: false,
                     	 displayInLayerSwitcher: false
                      }
                  );
 
 		            
 			this.mapView.addLayers([                    
+                 query,
                  countries,
                  glims_glaciers,
                  fog_points,
-                 wgi_glims,
-                 query
+                 wgi_points,
              ]);
 		},
 		

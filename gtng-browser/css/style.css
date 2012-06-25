@@ -53,7 +53,8 @@
 div.featureResults {
 	font-family: "Trebuchet MS", Helvetica, sans-serif;
 	font-size: .9em;
-	height: 70%;
+    float: left;
+	/*height: 70%;*/
 }
 
 .featureResults p {
@@ -65,11 +66,12 @@ div.featureResults {
 }
 
 div.featureResultContainer {
-	/*height: 100%;*/
+	height: 100%;
 	overflow: auto;
 	font-size: 80%;
 	border-top: 1px solid #8888FF;
 	margin-top: 10px;
+    float: left;
 }
 
 
@@ -120,6 +122,21 @@ div.featureHandle a {
 div.featureContainer {
 	margin-left: 2em;
     float: left;
+}
+
+div#tabs, .ui-tabs {
+    position: relative;
+    padding: 1em;
+    min-height: 800px;
+    overflow: auto;
+    zoom: 1;
+}
+
+div#legend {
+    /*float: right;*/
+    margin-left: 65%;
+    width: 20%;
+    background-color: #FFFFFF;
 }
 
 h3.glacierID {

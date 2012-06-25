@@ -1,26 +1,44 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
+
 	<head>
         <title>GTN-G Metadata Browser</title>
-		<script type="text/javascript" src="lib/jQuery-1.6.2/jquery-1.6.2.min.js"></script>
-		<script type="text/javascript" src="lib/jQuery-1.6.2/jquery-ui-1.8.16.custom/js/jquery-ui-1.8.16.custom.min.js"></script>
-		<script type="text/javascript" src="lib/backbone-0.5.3/underscore.js"></script>
-		<script type="text/javascript" src="lib/backbone-0.5.3/backbone.js"></script>
+        <script type="text/javascript" src="lib/jQuery-1.6.2/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript" src="lib/jQuery-1.6.2/jquery-ui-1.8.16.custom/js/jquery-ui-1.8.16.custom.min.js"></script>
+        <script type="text/javascript" src="lib/backbone-0.5.3/underscore.js"></script>
+        <script type="text/javascript" src="lib/backbone-0.5.3/backbone.js"></script>
         <link rel="stylesheet" type="text/css" href="lib/jQuery-1.6.2/jquery-ui-1.8.16.custom/css/ui-lightness/jquery-ui-1.8.16.custom.css" media="all"/>
         <link rel="stylesheet" type="text/css" href="lib/jQuery-1.6.2/jquery-ui-1.8.16.custom/development-bundle/themes/ui-lightness/jquery.ui.theme.css" media="all"/>
         <script type="text/javascript" src="lib/OpenLayers-2.11/lib/OpenLayers.js"></script>
         <script type="text/javascript" src="lib/handlebars.1.0.0.beta.6.js"></script>
-        
         <script type="text/javascript" src="js/gtng-browser.js"></script>
         <script type="text/javascript" src="build/js/gtng.js"></script>
         <link rel="stylesheet" type="text/css" href="build/css/styles.css"> 
-        
 	</head>
 
 	<body>
-        <div id="toplevel"><h1>GTN-G Metadata Browser</h1></div>
-		<div id="container"></div>
-		<div id="results"></div>
+      <div id="toplevel"><h1>GTN-G Metadata Browser</h1></div>
+      <div id="tabs">
+        <ul>
+          <li><a href="#map_interface">Map Search</a></li>
+          <li><a href="#text_interface">Text Search</a></li>
+        </ul>
+
+        <div id="map_interface">
+		    <div id="container">
+            </div>
+		    <div id="results"></div>
+            <div id="legend"></div>
+            <div id="clearbox"></div>
+        </div>
+        <div id="text_interface">
+            <div id="textsearch_container">
+                <p>
+                Under construction
+                </p>
+            </div>
+        </div>
+      </div>
 	</body>
 
 </html>
